@@ -15,6 +15,7 @@
         width: 100vw;
         height: 100vh;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
         background-image: url(doge.jpg);
@@ -32,21 +33,76 @@
         font-family: 'Comic Sans MS', 'Comic Neue', sans-serif;
         color: #fff;
         text-shadow: 0 0 5px #000;
+        width: 80vw;
+        text-align: center;
+        outline: 0;
+      }
+
+      .c {
+        width: 80vw;
+        display: flex;
+        flex-wrap: wrap;
+        opacity: 0;
+        transition: 1s;
+      }
+
+      body.show-controls .c {
+        opacity: 1;
+        transition-duration: .2s;
+      }
+
+      .b {
+        margin: .5rem;
+        padding: .2rem 2rem;
+        color: #fff;
+        border: 1px solid #fff;
+        border-radius: .5rem;
+        text-align: center;
+        flex-grow: 1;
+        cursor: default;
+        user-select: none;
+        transition: .2s;
+      }
+
+      .b:hover {
+        background-color: #fff;
+        text-shadow: 0 0 .8rem #000;
+      }
+
+      .n {
+        width: 100%;
       }
     </style>
   </head>
   <body>
     <div class=s>yes. such startpage. wow.</div>
+    <div class=c>
+      <div class=b data-cmd=bold><b>B</b></div>
+      <div class=b data-cmd=italic><i>I</i></div>
+      <div class=b data-cmd=underline><u>U</u></div>
+      <div class=b data-cmd=strikeThrough><s>S</s></div>
+      <div class=n></div>
+      <div class=b data-cmd=decreaseFontSize>-</div>
+      <div class=b data-cmd=increaseFontSize>+</div>
+    </div>
 
     <script>
       let fadeTimeout;
       document.body.addEventListener('mousemove', () => {
         document.body.classList.add('show-controls');
+        document.querySelector('.s').contentEditable = true;
         window.clearTimeout(fadeTimeout);
-        fadeTimeout = window.setTimeout(() => (
-          document.body.classList.remove('show-controls')
-        ), 1000);
+        fadeTimeout = window.setTimeout(() => {
+          if (document.activeElement === document.querySelector('.s')) return;
+          document.body.classList.remove('show-controls');
+          document.querySelector('.s').contentEditable = false;
+        }, 1000);
       });
+      document.querySelectorAll('[data-cmd]').forEach((e) => (
+        e.addEventListener('click', () => (
+          document.execCommand(e.dataset.cmd)
+        ))
+      ));
     </script>
   </body>
 </html>
